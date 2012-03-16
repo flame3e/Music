@@ -1,0 +1,41 @@
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+    var audioSection = $('section#audio');
+    $('a.html5').click(function() {
+
+        var audio = $('<audio>', {
+             controls : 'controls'
+        });
+
+        var url = $(this).attr('href');
+        $('<source>').attr('src', url).appendTo(audio);
+        audioSection.html(audio);
+        return false;
+    });
+});
+</script>
+<h2>Listen to a MP3 with HTML5 Audio</h2>
+<section id="audio">
+</section>
+<h2>Download and Delete Existing MP3's</h2>  
+<table>  
+<% @songs.each do |song| 
+     if(song.key.index(current_user.email) != nil || current_user.role=="admin")
+%>  
+    <tr>  
+        <td><%= song.key[0,song.key.index("SpLiT")] %></td>  
+        <td><%= link_to "HTML5 Audio", download_url_for(song.key), :class => "html5" %></td>
+        <td><%= link_to "Download", download_url_for(song.key) %></td>  
+        <td><%= link_to "Delete",  "delete/?song=" + song.key, :confirm => 'Are you sure you want to delete ' + song.key + '?' %></td>  
+    </tr>  
+<% 
+  end
+end %>  
+</table>  
+
+<h2>Upload a new MP3:</h2>
+<%= form_tag upload_path, :method => "post", :multipart => true do %>
+    <%= file_field_tag "mp3file" %>
+    <%= submit_tag "Upload" %>
+<% end %>
